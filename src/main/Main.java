@@ -10,9 +10,12 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import dao.IDao;
+import dao.MongoDao;
 import dao.MySqlDao;
 import data.Acid;
 import data.Merid;
+import data.Trx;
 
 public class Main {
 
@@ -32,11 +35,14 @@ public class Main {
 	
 	public static void setUp() throws ParseException, IOException
 	{
-		MySqlDao mysqlDao = new MySqlDao();
-//		insertAcids(mysqlDao);
-		insertMerids(mysqlDao);
+//		IDao dao = new MySqlDao();
+		IDao dao  = new MongoDao();
+		insertAcids(dao);
+		insertMerids(dao);
+		insertTrxs(dao);
+		
 	}
-	private static void insertMerids(MySqlDao mysqlDao) throws IOException, ParseException {
+	private static void insertMerids(IDao dao) throws IOException, ParseException {
 
 		FileReader fileReader = new FileReader(meridsFile);
 		BufferedReader reader = new BufferedReader(fileReader);
@@ -46,11 +52,11 @@ public class Main {
 		{
 			merids.add(new Merid(line));
 		}
-		mysqlDao.storeMerids(merids);
+		dao.storeMerids(merids);
 		
 	}
 
-	private static void insertAcids(MySqlDao mysqlDao) throws ParseException, IOException
+	private static void insertAcids(IDao dao) throws ParseException, IOException
 	{
 		FileReader fileReader = new FileReader(acidsFile);
 		BufferedReader reader = new BufferedReader(fileReader);
@@ -60,10 +66,10 @@ public class Main {
 		{
 			acids.add(new Acid(line));
 		}
-		mysqlDao.storeAcids(acids);
+		dao.storeAcids(acids);
 	}
 	
-	private static void insertTrxs(MySqlDao mysqlDao) throws IOException, ParseException
+	private static void insertTrxs(IDao dao) throws IOException, ParseException
 	{
 		for(File trxFile : trxDir.listFiles())
 		{
@@ -71,12 +77,12 @@ public class Main {
 			FileReader fileReader = new FileReader(trxFile);
 			BufferedReader reader = new BufferedReader(fileReader);
 			String line = null;
-			List<Acid> acids = new ArrayList<>(170000);
+			List<Trx> trxs = new ArrayList<>(170000);
 			while((line = reader.readLine()) != null )
 			{
-				acids.add(new Acid(line));
+				trxs.add(new Trx(line));
 			}
-			mysqlDao.storeAcids(acids);
+			dao.storeTrx(trxs);
 		}
 	}
 
