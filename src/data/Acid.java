@@ -26,7 +26,7 @@ public class Acid {
 	
 	public void setUp(String id, String gender, String birthDate) throws ParseException
 	{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD", Locale.ENGLISH);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 		Date pBD = sdf.parse(birthDate);
 
 		Gender pGender;

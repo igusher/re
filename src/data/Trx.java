@@ -3,6 +3,7 @@ package data;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Trx {
 	String acid;
@@ -16,8 +17,9 @@ public class Trx {
 		String[] parts = line.split(";");
 		acid = parts[0];
 		merid = parts[1];
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 		trxDate = sdf.parse(parts[2]);
+		
 		id = parts[3];
 		amount = Double.parseDouble(parts[4]);
 	}

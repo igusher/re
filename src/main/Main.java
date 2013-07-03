@@ -8,11 +8,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import com.mongodb.AggregationOutput;
 
 import dao.IDao;
 import dao.MongoDao;
 import dao.MySqlDao;
+import dao.NewMongoDao;
 import data.Acid;
 import data.Merid;
 import data.Trx;
@@ -22,6 +26,10 @@ public class Main {
 	static File acidsFile = new File("in//acids.in");
 	static File trxDir = new File("in/trx");
 	static File meridsFile = new File("in//merids.in");
+//	
+//	static File acidsFile = new File("testin//acids.in");
+//	static File trxDir = new File("testin/trx");
+//	static File meridsFile = new File("testin//merids.in");
 	
 	/**
 	 * @param args
@@ -36,14 +44,15 @@ public class Main {
 	public static void setUp() throws ParseException, IOException
 	{
 //		IDao dao = new MySqlDao();
-		IDao dao  = new MongoDao();
+//		IDao dao  = new MongoDao();
+		IDao dao  = new NewMongoDao();
 		insertAcids(dao);
 		insertMerids(dao);
 		insertTrxs(dao);
 		
 	}
 	private static void insertMerids(IDao dao) throws IOException, ParseException {
-
+		System.out.println("insert MERIDS");
 		FileReader fileReader = new FileReader(meridsFile);
 		BufferedReader reader = new BufferedReader(fileReader);
 		String line = null;
@@ -58,6 +67,7 @@ public class Main {
 
 	private static void insertAcids(IDao dao) throws ParseException, IOException
 	{
+		System.out.println("insert ACIDS");
 		FileReader fileReader = new FileReader(acidsFile);
 		BufferedReader reader = new BufferedReader(fileReader);
 		String line = null;
@@ -71,8 +81,12 @@ public class Main {
 	
 	private static void insertTrxs(IDao dao) throws IOException, ParseException
 	{
-		for(File trxFile : trxDir.listFiles())
+//		for(File trxFile : trxDir.listFiles())
+//		for(int i = 0 ; i < 5; i++)
+		Date start = new Date();
+		
 		{
+			File trxFile = trxDir.listFiles()[0];
 			System.out.println(trxFile.getAbsolutePath());
 			FileReader fileReader = new FileReader(trxFile);
 			BufferedReader reader = new BufferedReader(fileReader);
@@ -84,6 +98,10 @@ public class Main {
 			}
 			dao.storeTrx(trxs);
 		}
+
+		Date finish = new Date();
+		System.out.println(start + " \t-\t" + start.getTime());
+		System.out.println(finish + " \t-\t" + finish.getTime());
 	}
 
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import javax.print.attribute.standard.MediaSize.ISO;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
+import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBAddress;
@@ -19,6 +20,7 @@ import com.mongodb.Mongo;
 import data.Acid;
 import data.Gender;
 import data.Merid;
+import data.REQuery;
 import data.Trx;
 
 public class MongoDao implements IDao{
@@ -64,7 +66,7 @@ public class MongoDao implements IDao{
 				i=0;
 			}
 		}
-		 
+		acidsColl.insert(acidDbObjects);
 		
 	}
 
@@ -97,5 +99,16 @@ public class MongoDao implements IDao{
 		
 	}
 
-
+	public int getAcidsNum(REQuery reQuery) {
+		
+		DBObject groupFields = new BasicDBObject( "acid", "444-256");
+		groupFields.put("count", new BasicDBObject( "$sum", "1"));
+		
+		AggregationOutput aggrOut = trxsColl.aggregate(new BasicDBObject("$group", groupFields));
+		for(DBObject dbo : aggrOut.results())
+		{
+			System.out.println(dbo);
+		}
+		return 3;
+	}
 }
