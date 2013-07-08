@@ -2,15 +2,21 @@ package dao;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import data.Gender;
 import data.REQuery;
+import data.Trx;
 
 public class NewMongoDaoTest {
 
@@ -27,15 +33,20 @@ public class NewMongoDaoTest {
 		req.setGender(Gender.MALE);
 		req.setMerid("04381-04381");
 		req.setMinTrxNum(1);
-		req.setMaxTrxNum(3);
+		req.setMaxTrxNum(5);
 		req.setFromDate(sdf.parse("2013-05-02"));
-		req.setToDate(sdf.parse("2013-05-09"));
+		req.setToDate(sdf.parse("2013-05-29"));
 		req.setMinAge(25);
-		req.setMaxAge(32);
+		req.setMaxAge(35);
 	}
 	@Test
 	public void getAcidsNumTest() {
+		Date start = new Date();
 		dao.getAcidsNum(req);
+		Date finish = new Date();
+		System.out.println(start + " \t-\t" + start.getTime());
+		System.out.println(finish + " \t-\t" + finish.getTime());
+		
 	}
 	
 	

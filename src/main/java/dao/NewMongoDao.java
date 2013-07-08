@@ -50,16 +50,20 @@ public class NewMongoDao implements IDao{
 	
 	public NewMongoDao() throws UnknownHostException
 	{
-		mongoDb = Mongo.connect(new DBAddress("127.0.0.1","27017"));
-		dbColl = mongoDb.getCollection("test");
 //		mongoDb.createCollection("merids", new BasicDBObject());
 //		mongoDb.createCollection("acids", new BasicDBObject());
 //		mongoDb.createCollection("trxs", new BasicDBObject());
+		
+		mongoDb = Mongo.connect(new DBAddress("127.0.0.1","27017"));
 		
 		meridsColl = mongoDb.getCollection("new_merids");
 		acidsColl = mongoDb.getCollection("new_acids");
 		trxsColl = mongoDb.getCollection("new_trxs");
 		
+		
+	}
+	
+	public void erase(){
 		meridsColl.drop();
 		acidsColl.drop();
 		trxsColl.drop();

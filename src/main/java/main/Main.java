@@ -47,6 +47,7 @@ public class Main {
 //		IDao dao = new MySqlDao();
 //		IDao dao  = new MongoDao();
 		IDao dao  = new NewMongoDao();
+		dao.erase();
 		insertAcids(dao);
 		insertMerids(dao);
 		insertTrxs(dao);

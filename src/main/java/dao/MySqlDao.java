@@ -113,5 +113,11 @@ public class MySqlDao implements IDao {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public void erase() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

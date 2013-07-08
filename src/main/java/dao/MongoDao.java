@@ -111,4 +111,10 @@ public class MongoDao implements IDao{
 		}
 		return 3;
 	}
+
+	@Override
+	public void erase() {
+		// TODO Auto-generated method stub
+		
+	}
 }
