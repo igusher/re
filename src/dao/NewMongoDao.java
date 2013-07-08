@@ -4,6 +4,7 @@ import java.awt.image.DataBufferInt;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +25,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBAddress;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.WriteResult;
@@ -57,9 +59,9 @@ public class NewMongoDao implements IDao{
 		acidsColl = mongoDb.getCollection("new_acids");
 		trxsColl = mongoDb.getCollection("new_trxs");
 		
-		meridsColl.drop();
-		acidsColl.drop();
-		trxsColl.drop();
+//		meridsColl.drop();
+//		acidsColl.drop();
+//		trxsColl.drop();
 	}
 	
 	@Override
@@ -75,15 +77,14 @@ public class NewMongoDao implements IDao{
 			acidDbObjects.add(new BasicDBObject("id", acid.getId()).
 					append("gender", acid.getGender().toString().charAt(0)).
 					append("birthDate", sdf.format(acid.getBirthDate())));
-			if(i == 10000)
+			if(i == 100000)
 			{
 				acidsColl.insert(acidDbObjects);
 				acidDbObjects.clear();
 				i=0;
 			}
 		}
-		 
-		
+		acidsColl.insert(acidDbObjects);
 	}
 
 	@Override
@@ -122,14 +123,14 @@ public class NewMongoDao implements IDao{
 		ExecutorService execService = Executors.newFixedThreadPool(10);
 		for(Entry<String,List<Trx>> entry : trxByMerid.entrySet())
 		{
-			System.out.println(i++);
+//			System.out.println(i++);
 			
 			final Entry<String,List<Trx>> finalEntry = entry; 
 			execService.execute(new Runnable() {
 				
 				@Override
 				public void run() {
-					System.out.println(atomicInt.addAndGet(1));
+//					System.out.println(atomicInt.addAndGet(1));
 					Map<String, Object> local_merids_acids =  new HashMap<>();
 					Map<String, List<Trx>> trxByAcid = new HashMap<>();
 					for(Trx trx : finalEntry.getValue())
@@ -148,17 +149,31 @@ public class NewMongoDao implements IDao{
 					
 					Map<String,Object> setMap = new HashMap<>();
 					Map<String,Object> pushAllMap = new HashMap<>();
+					
+//					BasicDBObject selectAcidsOfMerid = new BasicDBObject("$match",new BasicDBObject("id",finalEntry.getKey()));
+					BasicDBList acidsDBList = new BasicDBList();
+					
+					List<String> existingAcids = new ArrayList<>();
+					DBCursor  c =meridsColl.find(new BasicDBObject("id", finalEntry.getKey()) , new BasicDBObject("acids", 1));
+					while(c.hasNext())
+					{
+						DBObject dbo = c.next();
+						BasicDBList acids = (BasicDBList)dbo.get("acids");
+						if(acids == null) continue;
+						for(Object a : acids)
+						{
+							DBObject ao = (DBObject)a;
+							String db = (String)ao.get("id");
+							existingAcids.add(db);
+						}
+						
+					}
+					
+					Map<String, BasicDBList> trxsByExistingAcid = new HashMap<>();
 					for(String acidKey : trxByAcid.keySet())
 					{
-						
 						Acid acid = acidsMap.get(acidKey);
 						List<Trx> trxList = trxByAcid.get(acidKey);
-
-						setMap.put(acidKey+".gender",  acid.getGender().toString().charAt(0));
-						setMap.put(acidKey+".birthDate",  acid.getBirthDate());
-						
-						
-						
 						BasicDBList trxDbList = new BasicDBList();
 						for(Trx trx :trxList)
 						{
@@ -169,13 +184,51 @@ public class NewMongoDao implements IDao{
 							trxDbList.add(trxDbObj);
 						}
 						
-						pushAllMap.put(acidKey+".trxs", trxDbList);
+						
+						if(existingAcids.contains(acidKey))
+						{
+							
+							System.out.println(finalEntry.getKey() + " : " + acidKey);
+							trxsByExistingAcid.put(acidKey, trxDbList);
+							DBObject query = new BasicDBObject("id", finalEntry.getKey()).append("acids.id", acid.getId());
+							DBObject update = new BasicDBObject("$pushAll", new BasicDBObject("acids.$.trxs", trxDbList));
+							try{
+								WriteResult result = meridsColl.update(query, update);
+//								System.out.println(result.getError());
+//								System.out.println(result.getN());
+							}
+							catch(Exception e)
+							{
+								e.printStackTrace();
+							}
+							
+						}
+						else
+						{
+							BasicDBObject newAcid = new BasicDBObject();
+							
+							newAcid.append("id", acid.getId());
+							newAcid.append("gender", acid.getGenderChar());
+							newAcid.append("birthDate", acid.getBirthDate());
+							newAcid.append("trxs", trxDbList);
+							
+							acidsDBList.add(newAcid);
+						}
 					}
 					
-					DBObject query = new BasicDBObject("id", finalEntry.getKey());
-					DBObject update = new BasicDBObject("$set", new BasicDBObject(setMap)).append("$pushAll", new BasicDBObject(pushAllMap));
-					WriteResult result = meridsColl.update(query, update);
-					System.out.println(result.getError());
+					BasicDBObject query = new BasicDBObject("id", finalEntry.getKey());
+					DBObject update = new BasicDBObject(new BasicDBObject("$pushAll", new BasicDBObject("acids", acidsDBList)));
+					try{
+						WriteResult result = meridsColl.update(query, update);
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
+					}
+//					System.out.println(result.getError());
+//					System.out.println(result.getN());
+//					
+				
 //					for(Trx trx : finalEntry.getValue())
 //					{
 //						DBObject trxDbObj = new BasicDBObject("id", trx.getId())
@@ -229,7 +282,13 @@ public class NewMongoDao implements IDao{
 
 	public int getAcidsNum(REQuery reQuery) {
 		
-		DBObject groupFields = new BasicDBObject( "acid", "444-256");
+		DBObject matchMerid = new BasicDBObject("$match", new BasicDBObject("id", reQuery.getMerid()));
+		DBObject unwindAcids = new BasicDBObject("$unwind", "$acids");
+		DBObject matchAcids = new BasicDBObject("$match", new BasicDBObject("acids.gender", reQuery.getGenderChar()));
+		DBObject group = new BasicDBObject("$group", new BasicDBObject("_id", "acids.id").append("trx_count", new BasicDBObject("$sum",1)));
+		
+		meridsColl.aggregate(matchMerid, unwindAcids,matchAcids,group);
+		DBObject groupFields = new BasicDBObject("acid", "444-256");
 		groupFields.put("count", new BasicDBObject( "$sum", "1"));
 		
 		AggregationOutput aggrOut = trxsColl.aggregate(new BasicDBObject("$group", groupFields));

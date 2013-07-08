@@ -53,6 +53,10 @@ public class Acid {
 	public void setId(String id) {
 		this.id = id;
 	}
+	public char getGenderChar()
+	{
+		return gender.toString().charAt(0);
+	}
 	public Gender getGender() {
 		return gender;
 	}

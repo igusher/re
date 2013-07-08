@@ -81,12 +81,13 @@ public class Main {
 	
 	private static void insertTrxs(IDao dao) throws IOException, ParseException
 	{
-//		for(File trxFile : trxDir.listFiles())
-//		for(int i = 0 ; i < 5; i++)
-		Date start = new Date();
+
 		
+//		for(File trxFile : trxDir.listFiles())
+		for(int i = 0 ; i < 10; i++)		
 		{
-			File trxFile = trxDir.listFiles()[0];
+			Date start = new Date();
+			File trxFile = trxDir.listFiles()[i];
 			System.out.println(trxFile.getAbsolutePath());
 			FileReader fileReader = new FileReader(trxFile);
 			BufferedReader reader = new BufferedReader(fileReader);
@@ -97,11 +98,12 @@ public class Main {
 				trxs.add(new Trx(line));
 			}
 			dao.storeTrx(trxs);
+			Date finish = new Date();
+			System.out.println(start + " \t-\t" + start.getTime());
+			System.out.println(finish + " \t-\t" + finish.getTime());
 		}
 
-		Date finish = new Date();
-		System.out.println(start + " \t-\t" + start.getTime());
-		System.out.println(finish + " \t-\t" + finish.getTime());
+		
 	}
 
 }
