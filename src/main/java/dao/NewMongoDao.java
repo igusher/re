@@ -4,6 +4,7 @@ import java.awt.image.DataBufferInt;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,9 +60,9 @@ public class NewMongoDao implements IDao{
 		acidsColl = mongoDb.getCollection("new_acids");
 		trxsColl = mongoDb.getCollection("new_trxs");
 		
-//		meridsColl.drop();
-//		acidsColl.drop();
-//		trxsColl.drop();
+		meridsColl.drop();
+		acidsColl.drop();
+		trxsColl.drop();
 	}
 	
 	@Override
@@ -281,21 +282,31 @@ public class NewMongoDao implements IDao{
 	}
 
 	public int getAcidsNum(REQuery reQuery) {
-		
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, - reQuery.getMinAge());
+		Date gBirthDate = cal.getTime();
+		cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, - reQuery.getMaxAge());
+		Date lBirthDate = cal.getTime();
 		DBObject matchMerid = new BasicDBObject("$match", new BasicDBObject("id", reQuery.getMerid()));
 		DBObject unwindAcids = new BasicDBObject("$unwind", "$acids");
-		DBObject matchAcids = new BasicDBObject("$match", new BasicDBObject("acids.gender", reQuery.getGenderChar()));
-		DBObject group = new BasicDBObject("$group", new BasicDBObject("_id", "acids.id").append("trx_count", new BasicDBObject("$sum",1)));
+		DBObject matchAcids = new BasicDBObject("$match", new BasicDBObject("acids.gender", reQuery.getGenderChar()).append("acids.birthDate", new BasicDBObject("$gte", lBirthDate).append("$lte", gBirthDate)));
+		DBObject unwindTrxs = new BasicDBObject("$unwind", "$acids.trxs");
+		DBObject matchTrxs = new BasicDBObject("$match", new BasicDBObject("acids.trxs.date", new BasicDBObject("$gte",reQuery.getFromDate()).append("$lte", reQuery.getToDate())));
+		DBObject group = new BasicDBObject("$group", new BasicDBObject("_id", "$acids.id").append("trx_count", new BasicDBObject("$sum",1)));
+		DBObject matchTrxsCount = new BasicDBObject("$match", new BasicDBObject("trx_count", new BasicDBObject("$gte",reQuery.getMinTrxNum()).append("$lte", reQuery.getMaxTrxNum())));
+		DBObject countAcids = new BasicDBObject("$group", new BasicDBObject("_id", null).append("count", new BasicDBObject("$sum",1)));
+		AggregationOutput aggrOut = meridsColl.aggregate(matchMerid, unwindAcids,matchAcids, unwindTrxs, matchTrxs, group, matchTrxsCount, countAcids);
+		System.out.println(aggrOut);
 		
-		meridsColl.aggregate(matchMerid, unwindAcids,matchAcids,group);
-		DBObject groupFields = new BasicDBObject("acid", "444-256");
-		groupFields.put("count", new BasicDBObject( "$sum", "1"));
-		
-		AggregationOutput aggrOut = trxsColl.aggregate(new BasicDBObject("$group", groupFields));
-		for(DBObject dbo : aggrOut.results())
-		{
-			System.out.println(dbo);
-		}
+//		DBObject groupFields = new BasicDBObject("acid", "444-256");
+//		groupFields.put("count", new BasicDBObject( "$sum", "1"));
+//		
+//		AggregationOutput aggrOut = trxsColl.aggregate(new BasicDBObject("$group", groupFields));
+//		for(DBObject dbo : aggrOut.results())
+//		{
+//			System.out.println(dbo);
+//		}
 		return 3;
 	}
 

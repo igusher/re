@@ -12,6 +12,7 @@ import java.util.List;
 
 import data.Acid;
 import data.Merid;
+import data.REQuery;
 import data.Trx;
 
 public class MySqlDao implements IDao {
@@ -105,6 +106,12 @@ public class MySqlDao implements IDao {
 	public void storeTrx(List<Trx> trxs) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public int getAcidsNum(REQuery reQuery) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 }

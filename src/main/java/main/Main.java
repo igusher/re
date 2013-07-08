@@ -17,6 +17,7 @@ import dao.IDao;
 import dao.MongoDao;
 import dao.MySqlDao;
 import dao.NewMongoDao;
+import dao.NewMongoDaoTest;
 import data.Acid;
 import data.Merid;
 import data.Trx;
@@ -83,11 +84,11 @@ public class Main {
 	{
 
 		
-//		for(File trxFile : trxDir.listFiles())
-		for(int i = 0 ; i < 10; i++)		
+		for(File trxFile : trxDir.listFiles())
+//		for(int i = 0 ; i < 10; i++)		
 		{
 			Date start = new Date();
-			File trxFile = trxDir.listFiles()[i];
+//			File trxFile = trxDir.listFiles()[i];
 			System.out.println(trxFile.getAbsolutePath());
 			FileReader fileReader = new FileReader(trxFile);
 			BufferedReader reader = new BufferedReader(fileReader);
