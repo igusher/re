@@ -31,13 +31,13 @@ public class NewMongoDaoTest {
 		dao = new NewMongoDao();
 		req = new REQuery();
 		req.setGender(Gender.MALE);
-		req.setMerid("04381-04381");
-		req.setMinTrxNum(1);
+		req.setMerid("04081-04081");
+		req.setMinTrxNum(0);
 		req.setMaxTrxNum(5);
 		req.setFromDate(sdf.parse("2013-05-02"));
-		req.setToDate(sdf.parse("2013-05-29"));
+		req.setToDate(sdf.parse("2013-06-29"));
 		req.setMinAge(25);
-		req.setMaxAge(35);
+		req.setMaxAge(50);
 	}
 	@Test
 	public void getAcidsNumTest() {
@@ -48,7 +48,6 @@ public class NewMongoDaoTest {
 		System.out.println(finish + " \t-\t" + finish.getTime());
 		
 	}
-	
 	
 
 }

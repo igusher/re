@@ -158,21 +158,21 @@ public class NewMongoDao implements IDao{
 //					BasicDBObject selectAcidsOfMerid = new BasicDBObject("$match",new BasicDBObject("id",finalEntry.getKey()));
 					BasicDBList acidsDBList = new BasicDBList();
 					
-					List<String> existingAcids = new ArrayList<>();
-					DBCursor  c =meridsColl.find(new BasicDBObject("id", finalEntry.getKey()) , new BasicDBObject("acids", 1));
-					while(c.hasNext())
-					{
-						DBObject dbo = c.next();
-						BasicDBList acids = (BasicDBList)dbo.get("acids");
-						if(acids == null) continue;
-						for(Object a : acids)
-						{
-							DBObject ao = (DBObject)a;
-							String db = (String)ao.get("id");
-							existingAcids.add(db);
-						}
-						
-					}
+//					List<String> existingAcids = new ArrayList<>();
+//					DBCursor  c =meridsColl.find(new BasicDBObject("id", finalEntry.getKey()) , new BasicDBObject("acids", 1));
+//					while(c.hasNext())
+//					{
+//						DBObject dbo = c.next();
+//						BasicDBList acids = (BasicDBList)dbo.get("acids");
+//						if(acids == null) continue;
+//						for(Object a : acids)
+//						{
+//							DBObject ao = (DBObject)a;
+//							String db = (String)ao.get("id");
+//							existingAcids.add(db);
+//						}
+//						
+//					}
 					
 					Map<String, BasicDBList> trxsByExistingAcid = new HashMap<>();
 					for(String acidKey : trxByAcid.keySet())
@@ -190,10 +190,10 @@ public class NewMongoDao implements IDao{
 						}
 						
 						
-						if(existingAcids.contains(acidKey))
+						if(merids_acids.containsKey(finalEntry.getKey()+acidKey))
 						{
 							
-							System.out.println(finalEntry.getKey() + " : " + acidKey);
+//							System.out.println(finalEntry.getKey() + " : " + acidKey);
 							trxsByExistingAcid.put(acidKey, trxDbList);
 							DBObject query = new BasicDBObject("id", finalEntry.getKey()).append("acids.id", acid.getId());
 							DBObject update = new BasicDBObject("$pushAll", new BasicDBObject("acids.$.trxs", trxDbList));
@@ -218,11 +218,14 @@ public class NewMongoDao implements IDao{
 							newAcid.append("trxs", trxDbList);
 							
 							acidsDBList.add(newAcid);
+							local_merids_acids.put(finalEntry.getKey()+acidKey, mock);
+//							merids_acids.put(finalEntry.getKey()+acidKey, mock);
 						}
 					}
 					
 					BasicDBObject query = new BasicDBObject("id", finalEntry.getKey());
 					DBObject update = new BasicDBObject(new BasicDBObject("$pushAll", new BasicDBObject("acids", acidsDBList)));
+					merids_acids.putAll(local_merids_acids);
 					try{
 						WriteResult result = meridsColl.update(query, update);
 					}
