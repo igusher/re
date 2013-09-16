@@ -59,6 +59,11 @@ public class NewMongoDao implements IDao{
 		meridsColl = mongoDb.getCollection("new_merids");
 		acidsColl = mongoDb.getCollection("new_acids");
 		trxsColl = mongoDb.getCollection("new_trxs");
+		meridsColl.drop();
+		acidsColl.drop();
+		trxsColl.drop();
+//		meridsColl.ensureIndex(new BasicDBObject().append("id", 1));
+		meridsColl.ensureIndex(new BasicDBObject().append("id", 1).append("acids.id", 1));
 		
 		
 	}
@@ -193,7 +198,7 @@ public class NewMongoDao implements IDao{
 						if(existingAcids.contains(acidKey))
 						{
 							
-							System.out.println(finalEntry.getKey() + " : " + acidKey);
+//							System.out.println(finalEntry.getKey() + " : " + acidKey);
 							trxsByExistingAcid.put(acidKey, trxDbList);
 							DBObject query = new BasicDBObject("id", finalEntry.getKey()).append("acids.id", acid.getId());
 							DBObject update = new BasicDBObject("$pushAll", new BasicDBObject("acids.$.trxs", trxDbList));
