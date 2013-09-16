@@ -23,7 +23,7 @@ import data.Trx;
 public class InMemDao{
 	public SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	AtomicInteger acidsCount = new AtomicInteger(0);
-	final Map<Integer,AtomicInteger> trxByAcidsCount = new ConcurrentHashMap<>();
+	final Map<Integer,AtomicInteger> trxByAcidsCount = new ConcurrentHashMap<Integer,AtomicInteger>();
 	
 	File trxDir;
 	List<TrxTuple> trxsList = (List<TrxTuple>) Collections.synchronizedList(new ArrayList<TrxTuple>(9000000));
@@ -34,7 +34,7 @@ public class InMemDao{
 	}
 	
 	public  void readData() {
-		List<Thread> threads = new ArrayList<>();
+		List<Thread> threads = new ArrayList<Thread>();
 		for(File trxFile : trxDir.listFiles())
 //		for(int i = 0 ; i < 10; i++)
 		{
@@ -94,7 +94,7 @@ public class InMemDao{
 		System.out.println(trxsList.size());
 		final int batchSize = 500000;
 		int n = trxsList.size() / batchSize;
-		List<Thread> threads = new ArrayList<>();
+		List<Thread> threads = new ArrayList<Thread>();
 		for(int i = 0 ; i < n; i++)
 		{
 			final Integer start = i * batchSize;

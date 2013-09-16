@@ -5,8 +5,7 @@ import java.util.List;
 
 public class REQuery {
 	Gender gender;
-	int minAge;
-	int maxAge;
+	AgeGroup ageGroup;
 	List<String> insees;
 	int minTrxNum;
 	int maxTrxNum;
@@ -15,7 +14,21 @@ public class REQuery {
 	String merid;
 	CustomerProfile custmerProfile;
 	
-	
+		public REQuery(Gender gender, AgeGroup ageGroup, List<String> insees,
+			int minTrxNum, int maxTrxNum, Date fromDate, Date toDate,
+			String merid, CustomerProfile custmerProfile) {
+		super();
+		this.gender = gender;
+		this.ageGroup = ageGroup;
+		this.insees = insees;
+		this.minTrxNum = minTrxNum;
+		this.maxTrxNum = maxTrxNum;
+		this.fromDate = fromDate;
+		this.toDate = toDate;
+		this.merid = merid;
+		this.custmerProfile = custmerProfile;
+	}
+
 	public char getGenderChar()
 	{
 		return gender.toString().charAt(0);
@@ -27,18 +40,15 @@ public class REQuery {
 	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
-	public int getMinAge() {
-		return minAge;
+
+	public AgeGroup getAgeGroup() {
+		return ageGroup;
 	}
-	public void setMinAge(int minAge) {
-		this.minAge = minAge;
+
+	public void setAgeGroup(AgeGroup ageGroup) {
+		this.ageGroup = ageGroup;
 	}
-	public int getMaxAge() {
-		return maxAge;
-	}
-	public void setMaxAge(int maxAge) {
-		this.maxAge = maxAge;
-	}
+
 	public List<String> getInsees() {
 		return insees;
 	}

@@ -30,12 +30,21 @@ public class Acid {
 		Date pBD = sdf.parse(birthDate);
 
 		Gender pGender;
-		switch(gender){
-			case "M": pGender = Gender.MALE; break; 
-			case "F": pGender = Gender.FEMALE; break;
-			default: throw new ParseException("genderParseError", 0);
+		if (gender.equals("M"))
+		{
+			pGender = Gender.MALE;
 		}
-		
+		else 
+		{
+			if(gender.equals("F"))
+			{
+				pGender = Gender.FEMALE;
+			}
+			else
+			{
+				throw new ParseException("genderParseError", 0);
+			}
+		}
 		setUp(id, pGender, pBD);
 	}
 	

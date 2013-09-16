@@ -21,7 +21,7 @@ public class MySqlDao implements IDao {
 	
 	public MySqlDao() {
 		try{
-			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+//			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/RE", "root","secret");
 		}
 		catch(Exception exc)
