@@ -2,27 +2,27 @@ package main;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.mongodb.AggregationOutput;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import dao.IDao;
-import dao.MongoDao;
-import dao.MySqlDao;
+import dao.InMemDao;
 import dao.NewMongoDao;
-import dao.NewMongoDaoTest;
 import data.Acid;
 import data.Merid;
 import data.Trx;
 
 public class Main {
+	
+	
 
 	static File acidsFile = new File("in//acids.in");
 	static File trxDir = new File("in/trx");
@@ -37,11 +37,44 @@ public class Main {
 	 * @throws IOException 
 	 * @throws ParseException 
 	 */
+	public static void main1(String[] args) throws ParseException, IOException {
+		// TODO Auto-generated method stub
+//		setUp();
+	}
 	public static void main(String[] args) throws ParseException, IOException {
 		// TODO Auto-generated method stub
-		setUp();
+//		setUp();
+		InMemDao inMemDao = new InMemDao(trxDir);
+		
+		System.out.println("Read data: ...");
+		Date start = new Date();
+		inMemDao. readData();
+		Date finish = new Date();
+		System.out.println(start + " \t-\t" + start.getTime());
+		System.out.println(finish + " \t-\t" + finish.getTime());
+		
+		System.out.println("Query data: ...");
+		start = new Date();
+		Map<Integer, AtomicInteger> map = inMemDao.queryData();
+		finish = new Date();
+		System.out.println(start + " \t-\t" + start.getTime());
+		System.out.println(finish + " \t-\t" + finish.getTime());
+		
+		System.out.println("Check data: ...");
+		start = new Date();
+		int sum  = 0;
+		for(Entry<Integer,AtomicInteger> entry : map.entrySet())
+		{
+			sum = sum + entry.getValue().get();
+		}
+		System.out.println(sum);
+		finish = new Date();
+		System.out.println(start + " \t-\t" + start.getTime());
+		System.out.println(finish + " \t-\t" + finish.getTime());
+		
 	}
 	
+
 	public static void setUp() throws ParseException, IOException
 	{
 //		IDao dao = new MySqlDao();

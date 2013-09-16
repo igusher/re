@@ -46,13 +46,14 @@ public class Main {
 			System.out.println(trxsColl.count());
 			
 			System.out.println(trxsColl.findOne());
-			
-			DBCursor  c =meridsColl.find();
-			while(c.hasNext())
-			{
-				System.out.println(c.next());
-			}
-			insertSome(null);
+//			countTrxsNum(meridsColl);
+			countAcidNum(meridsColl);
+//			DBCursor  c =meridsColl.find();
+//			while(c.hasNext())
+//			{
+//				System.out.println(c.next());
+//			}
+//			insertSome(null);
 	}
 
 	private static void insertSome(DBCollection coll) throws ParseException {
@@ -88,5 +89,27 @@ public class Main {
 		System.out.println(sum);
 	}
 
+
+	
+	public static void countTrxsNum(DBCollection coll)
+	{
+		AggregationOutput aggrOut = coll.aggregate(new BasicDBObject("$unwind", "$acids"), new BasicDBObject("$unwind", "$acids.trxs"), new BasicDBObject("$group", new BasicDBObject("_id", null).append("count", new BasicDBObject("$sum", 1))));
+		System.out.println(aggrOut);
+	}
+	
+	public static void countAcidNum(DBCollection coll)
+	{
+		Date start = new Date();
+		AggregationOutput aggrOut = coll.aggregate(new BasicDBObject("$unwind", "$acids"), new BasicDBObject("$group", new BasicDBObject("_id", "$acids.id")), 
+					new BasicDBObject("$group", new BasicDBObject("_id", null).append("count", new BasicDBObject("$sum", 1))));
+		
+//		AggregationOutput aggrOut = coll.aggregate(new BasicDBObject("$unwind", "$acids"));
+		System.out.println(aggrOut);
+		Date finish = new Date();
+		System.out.println(start + " \t-\t" + start.getTime());
+		System.out.println(finish + " \t-\t" + finish.getTime());
+//		System.out.println(aggrOut.results().iterator().);
+		
+	}
 
 }
