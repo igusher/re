@@ -1,24 +1,19 @@
 package dao;
 
-import java.awt.image.DataBufferInt;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.bson.BasicBSONObject;
 
 import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBList;
@@ -26,7 +21,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBAddress;
 import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.WriteResult;
@@ -295,10 +289,12 @@ public class NewMongoDao implements IDao{
 
 	public int getAcidsNum(REQuery reQuery) {
 		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.YEAR, - reQuery.getMinAge());
+//		cal.add(Calendar.YEAR, - reQuery.getMinAge());
+		cal.add(Calendar.YEAR, - 10); //TODO: hardfix
 		Date gBirthDate = cal.getTime();
 		cal = Calendar.getInstance();
-		cal.add(Calendar.YEAR, - reQuery.getMaxAge());
+//		cal.add(Calendar.YEAR, - reQuery.getMaxAge());
+		cal.add(Calendar.YEAR, - 25); //TODO: hardfix 
 		Date lBirthDate = cal.getTime();
 		DBObject matchMerid = new BasicDBObject("$match", new BasicDBObject("id", reQuery.getMerid()));
 		DBObject unwindAcids = new BasicDBObject("$unwind", "$acids");
@@ -320,6 +316,12 @@ public class NewMongoDao implements IDao{
 //			System.out.println(dbo);
 //		}
 		return 3;
+	}
+
+	@Override
+	public void storeInsees(List<String> insees) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -14,7 +14,7 @@ public class REQuery {
 	String merid;
 	CustomerProfile custmerProfile;
 	
-		public REQuery(Gender gender, AgeGroup ageGroup, List<String> insees,
+	public REQuery(Gender gender, AgeGroup ageGroup, List<String> insees,
 			int minTrxNum, int maxTrxNum, Date fromDate, Date toDate,
 			String merid, CustomerProfile custmerProfile) {
 		super();
