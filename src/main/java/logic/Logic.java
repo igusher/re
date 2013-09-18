@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -71,7 +72,7 @@ public class Logic implements ILogic {
 	private void setUpTrxFromFile(File trxFile) throws IOException,
 			ParseException {
 		List<Trx> trxs = readTrxs(trxFile);
-		dao.storeTrx(trxs);
+		dao.storeTrxs(trxs);
 	}
 
 	private List<Acid> readAcids() throws ParseException, IOException {
@@ -130,6 +131,25 @@ public class Logic implements ILogic {
 	@Override
 	public int getAcidsNum(REQuery reQuery) {
 		return dao.getAcidsNum(reQuery);
+	}
+
+	@Override
+	public int submitTrxsAsTextBlock(String trxsBlock) {
+		int storedCount = 0;
+		BufferedReader reader = new BufferedReader(new StringReader(trxsBlock));
+		String trxString = null;
+		try{
+		while ((trxString = reader.readLine()) != null)
+			if (dao.storeTrx(new Trx(trxString)))
+				storedCount++;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return 0;
+		}
+		
+		return storedCount;
 	}
 
 }

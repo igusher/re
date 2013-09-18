@@ -106,7 +106,7 @@ public class NewMongoDao implements IDao{
 	}
 
 	@Override
-	public void storeTrx(List<Trx> trxs) {
+	public int storeTrxs(List<Trx> trxs) {
 		Map<String, List<Trx>> trxByMerid = new HashMap<>();
 		for(Trx trx : trxs)
 		{
@@ -284,6 +284,8 @@ public class NewMongoDao implements IDao{
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+		
+		return 10; //TODO: return number of stored trxs
 	
 	}
 
@@ -316,6 +318,12 @@ public class NewMongoDao implements IDao{
 //			System.out.println(dbo);
 //		}
 		return 3;
+	}
+
+	@Override
+	public boolean storeTrx(Trx trx) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override

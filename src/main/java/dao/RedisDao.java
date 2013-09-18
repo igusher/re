@@ -20,7 +20,7 @@ import data.REQuery;
 import data.Trx;
 
 public class RedisDao implements IDao {
-	
+
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	Jedis jedisClient;
@@ -41,7 +41,7 @@ public class RedisDao implements IDao {
 	BitSet fames = null;
 
 	public RedisDao(String host, int port) {
-		jedisClient = new Jedis(host, port);
+		jedisClient = new Jedis(host);
 	}
 
 	@Override
@@ -104,23 +104,38 @@ public class RedisDao implements IDao {
 	}
 
 	@Override
-	public void storeTrx(List<Trx> trxs) {
-		for (Trx trx : trxs) {
-			int acidId = acidIdToArrayId.get(trx.getAcid());
-			String insee = merids.get(meridIdToArrayId.get(trx.getMerid()))
-					.getInsee();
-			inseeAcids.get(insee).set(acidId);
-			meridToAcids.get(trx.getMerid()).set(acidId);
-			
-			saveTrxToRedis(trx);
-		}
+	public int storeTrxs(List<Trx> trxs) {
+		int storedTrxsCount = 0;
+		for (Trx trx : trxs) 
+			if (storeTrx(trx))
+				storedTrxsCount++;
+		return storedTrxsCount;
 	}
 	
+	@Override
+	public boolean storeTrx(Trx trx) {
+		Integer acidId = acidIdToArrayId.get(trx.getAcid());
+		if (acidId == null)
+			return false;
+		Integer meridId = meridIdToArrayId.get(trx.getMerid());
+		if (meridId == null)
+			return false;
+
+		String insee = merids.get(meridIdToArrayId.get(trx.getMerid()))
+				.getInsee();
+		inseeAcids.get(insee).set(acidId);
+		meridToAcids.get(trx.getMerid()).set(acidId);
+
+		saveTrxToRedis(trx);
+
+		return true;
+	}
+
 	private void saveTrxToRedis(Trx newTrx) {
 
 		String key = newTrx.getMerid() + "_" + newTrx.getAcid();
 		jedisClient.lpush(key.getBytes(), (sdf.format(newTrx.getTrxDate())
-					+ ";" + newTrx.getAmount()).getBytes());
+				+ ";" + newTrx.getAmount()).getBytes());
 	}
 
 	@Override
@@ -133,8 +148,8 @@ public class RedisDao implements IDao {
 	public int getAcidsNum(REQuery reQuery) {
 		int resultAcidNum = 0;
 		List<String> insees = reQuery.getInsees();
-		BitSet inseeBit = BitSet.valueOf(
-								inseeAcids.get(insees.get(0)).toLongArray());
+		BitSet inseeBit = BitSet.valueOf(inseeAcids.get(insees.get(0))
+				.toLongArray());
 		for (int i = 1; i < insees.size(); i++) {
 			inseeBit.or(BitSet.valueOf(inseeAcids.get(insees.get(i))
 					.toLongArray()));
@@ -144,7 +159,7 @@ public class RedisDao implements IDao {
 				.toLongArray());
 		BitSet meridBit = BitSet.valueOf(meridToAcids.get(reQuery.getMerid())
 				.toLongArray());
-		
+
 		BitSet genderBitSet = null;
 		Gender gender = reQuery.getGender();
 		if (gender.equals(Gender.MALE))
@@ -167,12 +182,9 @@ public class RedisDao implements IDao {
 
 			for (String trx : trxsStrings) {
 				Date trxDate = null;
-				try
-				{
-				 trxDate = sdf.parse(trx.split(";")[0]);
-				}
-				catch(Exception e)
-				{
+				try {
+					trxDate = sdf.parse(trx.split(";")[0]);
+				} catch (Exception e) {
 					e.printStackTrace();
 					break;
 				}
@@ -180,11 +192,14 @@ public class RedisDao implements IDao {
 						&& (trxDate.before(reQuery.getToDate())))
 					count++;
 			}
-			if ((count >= reQuery.getMinTrxNum()) && (count <= reQuery.getMaxTrxNum())) {
+			if ((count >= reQuery.getMinTrxNum())
+					&& (count <= reQuery.getMaxTrxNum())) {
 				resultAcidNum++;
 			}
 		}
 		return resultAcidNum;
 	}
+
+
 
 }

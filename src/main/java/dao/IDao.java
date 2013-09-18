@@ -12,8 +12,10 @@ public interface IDao {
 	
 	void storeAcids(List<Acid> acids);
 	void storeMerids(List<Merid> merids);
-	void storeTrx(List<Trx> trxs);
+	int storeTrxs(List<Trx> trxs);
 	void storeInsees(List<String> insees);
+	
+	boolean storeTrx(Trx trx);
 	
 	int getAcidsNum(REQuery reQuery);
 }

@@ -8,4 +8,6 @@ import data.REQuery;
 public interface ILogic {
 	void setUp() throws ParseException, IOException;
 	int getAcidsNum(REQuery reQuery);
+	
+	int submitTrxsAsTextBlock(String trxsBlock);
 }

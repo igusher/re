@@ -132,7 +132,7 @@ public class Main {
 			{
 				trxs.add(new Trx(line));
 			}
-			dao.storeTrx(trxs);
+			dao.storeTrxs(trxs);
 			Date finish = new Date();
 			System.out.println(start + " \t-\t" + start.getTime());
 			System.out.println(finish + " \t-\t" + finish.getTime());
