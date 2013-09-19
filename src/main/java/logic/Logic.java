@@ -38,7 +38,7 @@ public class Logic implements ILogic {
 		setUpAcids();
 		setUpInsees();
 		setUpMerids();
-		setUpTrxs();
+//		setUpTrxs();
 	}
 	
 	private void setUpAcids() throws ParseException, IOException {
