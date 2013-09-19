@@ -149,24 +149,21 @@ public class RedisDao implements IDao {
 	public int getAcidsNum(REQuery reQuery) {
 		int resultAcidNum = 0;
 		List<String> insees = reQuery.getInsees();
-		BitSet inseeBit = BitSet.valueOf(inseeAcids.get(insees.get(0))
-				.toLongArray());
+		BitSet inseeBit = (BitSet)inseeAcids.get(insees.get(0)).clone();
 		for (int i = 1; i < insees.size(); i++) {
-			inseeBit.or(BitSet.valueOf(inseeAcids.get(insees.get(i))
-					.toLongArray()));
+			inseeBit.or((BitSet)inseeAcids.get(insees.get(i))
+					.clone());
 		}
 
-		BitSet ageBit = BitSet.valueOf(ageGroups.get(reQuery.getAgeGroup())
-				.toLongArray());
-		BitSet meridBit = BitSet.valueOf(meridToAcids.get(reQuery.getMerid())
-				.toLongArray());
+		BitSet ageBit = (BitSet) ageGroups.get(reQuery.getAgeGroup()).clone();
+		BitSet meridBit = (BitSet) meridToAcids.get(reQuery.getMerid()).clone();
 
 		BitSet genderBitSet = null;
 		Gender gender = reQuery.getGender();
 		if (gender.equals(Gender.MALE))
-			genderBitSet = BitSet.valueOf(males.toLongArray());
+			genderBitSet = (BitSet)males.clone();
 		else
-			genderBitSet = BitSet.valueOf(fames.toLongArray());
+			genderBitSet = (BitSet)fames.clone();
 
 		meridBit.and(inseeBit);
 		meridBit.and(genderBitSet);
