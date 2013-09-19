@@ -91,7 +91,7 @@ public class Main {
 		FileReader fileReader = new FileReader(meridsFile);
 		BufferedReader reader = new BufferedReader(fileReader);
 		String line = null;
-		List<Merid> merids = new ArrayList<>(7200);
+		List<Merid> merids = new ArrayList<Merid>(7200);
 		while((line = reader.readLine()) != null )
 		{
 			merids.add(new Merid(line));
@@ -106,7 +106,7 @@ public class Main {
 		FileReader fileReader = new FileReader(acidsFile);
 		BufferedReader reader = new BufferedReader(fileReader);
 		String line = null;
-		List<Acid> acids = new ArrayList<>(550000);
+		List<Acid> acids = new ArrayList<Acid>(550000);
 		while((line = reader.readLine()) != null )
 		{
 			acids.add(new Acid(line));
@@ -127,7 +127,7 @@ public class Main {
 			FileReader fileReader = new FileReader(trxFile);
 			BufferedReader reader = new BufferedReader(fileReader);
 			String line = null;
-			List<Trx> trxs = new ArrayList<>(170000);
+			List<Trx> trxs = new ArrayList<Trx>(170000);
 			while((line = reader.readLine()) != null )
 			{
 				trxs.add(new Trx(line));

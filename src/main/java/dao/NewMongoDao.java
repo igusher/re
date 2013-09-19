@@ -39,8 +39,8 @@ public class NewMongoDao implements IDao{
 	AtomicInteger atomicInt = new AtomicInteger();
 	
 	Object mock = new Object();
-	Map<String, Object> merids_acids =  new ConcurrentHashMap<>();
-	Map<String, Acid> acidsMap = new HashMap<>();
+	Map<String, Object> merids_acids =  new ConcurrentHashMap<String,Object>();
+	Map<String, Acid> acidsMap = new HashMap<String, Acid>();
 	
 	public NewMongoDao() throws UnknownHostException
 	{
@@ -72,7 +72,7 @@ public class NewMongoDao implements IDao{
 	public void storeAcids(List<Acid> acids) {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD");
-		List<DBObject> acidDbObjects = new ArrayList<>();
+		List<DBObject> acidDbObjects = new ArrayList<DBObject>();
 		int i = 0;
 		for(Acid acid : acids)
 		{
@@ -93,7 +93,7 @@ public class NewMongoDao implements IDao{
 
 	@Override
 	public void storeMerids(List<Merid> merids) {
-		List<DBObject> meridDbObjects = new ArrayList<>();
+		List<DBObject> meridDbObjects = new ArrayList<DBObject>();
 		for(Merid merid : merids)
 		{	
 			meridDbObjects.add(new BasicDBObject("id", merid.getId())
@@ -107,7 +107,7 @@ public class NewMongoDao implements IDao{
 
 	@Override
 	public int storeTrxs(List<Trx> trxs) {
-		Map<String, List<Trx>> trxByMerid = new HashMap<>();
+		Map<String, List<Trx>> trxByMerid = new HashMap<String, List<Trx>>();
 		for(Trx trx : trxs)
 		{
 			if(trxByMerid.containsKey(trx.getMerid()))
@@ -116,7 +116,7 @@ public class NewMongoDao implements IDao{
 			}
 			else
 			{
-				List<Trx> trxList = new ArrayList<>();
+				List<Trx> trxList = new ArrayList<Trx>();
 				trxList.add(trx);		
 				trxByMerid.put(trx.getMerid(),trxList);
 			}	
@@ -135,8 +135,8 @@ public class NewMongoDao implements IDao{
 				@Override
 				public void run() {
 //					System.out.println(atomicInt.addAndGet(1));
-					Map<String, Object> local_merids_acids =  new HashMap<>();
-					Map<String, List<Trx>> trxByAcid = new HashMap<>();
+					Map<String, Object> local_merids_acids =  new HashMap<String, Object>();
+					Map<String, List<Trx>> trxByAcid = new HashMap<String, List<Trx>>();
 					for(Trx trx : finalEntry.getValue())
 					{
 						if(trxByAcid.containsKey(trx.getAcid()))
@@ -145,14 +145,14 @@ public class NewMongoDao implements IDao{
 						}
 						else
 						{
-							List<Trx> trxList = new ArrayList<>();
+							List<Trx> trxList = new ArrayList<Trx>();
 							trxList.add(trx);		
 							trxByAcid.put(trx.getAcid(),trxList);
 						}	
 					}
 					
-					Map<String,Object> setMap = new HashMap<>();
-					Map<String,Object> pushAllMap = new HashMap<>();
+					Map<String,Object> setMap = new HashMap<String,Object>();
+					Map<String,Object> pushAllMap = new HashMap<String,Object>();
 					
 //					BasicDBObject selectAcidsOfMerid = new BasicDBObject("$match",new BasicDBObject("id",finalEntry.getKey()));
 					BasicDBList acidsDBList = new BasicDBList();
@@ -173,7 +173,7 @@ public class NewMongoDao implements IDao{
 //						
 //					}
 					
-					Map<String, BasicDBList> trxsByExistingAcid = new HashMap<>();
+					Map<String, BasicDBList> trxsByExistingAcid = new HashMap<String, BasicDBList>();
 					for(String acidKey : trxByAcid.keySet())
 					{
 						Acid acid = acidsMap.get(acidKey);

@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import data.Gender;
@@ -28,17 +29,20 @@ public class NewMongoDaoTest {
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
-		dao = new NewMongoDao();
-		req = new REQuery();
-		req.setGender(Gender.MALE);
-		req.setMerid("04081-04081");
-		req.setMinTrxNum(0);
-		req.setMaxTrxNum(5);
-		req.setFromDate(sdf.parse("2013-05-02"));
-		req.setToDate(sdf.parse("2013-06-29"));
-		req.setMinAge(25);
-		req.setMaxAge(50);
+//		dao = new NewMongoDao();
+//		req = new REQuery(Gender.MALE, "04081-04081",);
+//		req.setGender(Gender.MALE);
+//		req.setMerid("04081-04081");
+//		req.setMinTrxNum(0);
+//		req.setMaxTrxNum(5);
+//		req.setFromDate(sdf.parse("2013-05-02"));
+//		req.setToDate(sdf.parse("2013-06-29"));
+//		req.setMinAge(25);
+//		req.setMaxAge(50);
 	}
+	
+	
+	@Ignore
 	@Test
 	public void getAcidsNumTest() {
 		Date start = new Date();
