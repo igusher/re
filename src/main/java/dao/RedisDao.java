@@ -25,7 +25,7 @@ public class RedisDao implements IDao {
 
 	Jedis jedisClient;
 
-	List<Acid> acids = new ArrayList<Acid>(550000);
+	List<String> acids = new ArrayList<String>(550000);
 	List<Merid> merids = new ArrayList<Merid>(7200);
 	int acidsCount = 0;
 
@@ -61,7 +61,7 @@ public class RedisDao implements IDao {
 	@Override
 	public void storeAcids(List<Acid> acids) {
 		acidsCount = acids.size();
-		this.acids = acids;
+//		this.acids = acids;
 		males = new BitSet(acidsCount);
 		fames = new BitSet(acidsCount);
 		ageGroups.put(AgeGroup.G10_25, new BitSet(acidsCount));
@@ -71,6 +71,7 @@ public class RedisDao implements IDao {
 		int acidArrayId = 0;
 		int bitId = 0;
 		for (Acid acid : acids) {
+			this.acids.add(acid.getId());
 			acidIdToArrayId.put(acid.getId(), acidArrayId);
 
 			if (acid.getGender().equals(Gender.MALE))
@@ -174,7 +175,7 @@ public class RedisDao implements IDao {
 		System.out.println(meridBit);
 		int acidId = meridBit.nextSetBit(0);
 		for (; acidId >= 0; acidId = meridBit.nextSetBit(acidId + 1)) {
-			String key = reQuery.getMerid() + "_" + acids.get(acidId).getId();
+			String key = reQuery.getMerid() + "_" + acids.get(acidId);
 			jedisClient.lrange(key, 0, -1);
 			List<String> trxsStrings = jedisClient.lrange(key, 0, -1);
 			System.out.println(key);
@@ -198,6 +199,24 @@ public class RedisDao implements IDao {
 			}
 		}
 		return resultAcidNum;
+	}
+
+	@Override
+	public void storeAcid(Acid acid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void storeMerid(Merid merid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void storeInsee(String insee) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

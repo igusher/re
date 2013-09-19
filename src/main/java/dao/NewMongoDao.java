@@ -332,4 +332,22 @@ public class NewMongoDao implements IDao{
 		
 	}
 
+	@Override
+	public void storeAcid(Acid acid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void storeMerid(Merid merid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void storeInsee(String insee) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
