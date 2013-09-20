@@ -8,9 +8,9 @@ public enum AgeGroup {
 		switch(ageGroup)
 		{
 			case 0: result = AgeGroup.G10_25; break;
-			case 1: result = AgeGroup.G10_25; break;
-			case 2: result = AgeGroup.G10_25; break;
-			case 3: result = AgeGroup.G10_25; break;
+			case 1: result = AgeGroup.G25_40; break;
+			case 2: result = AgeGroup.G40_55; break;
+			case 3: result = AgeGroup.G55_70; break;
 			default: throw new IllegalArgumentException("Age Group can have values 1 - 4");
 		}
 		return result;

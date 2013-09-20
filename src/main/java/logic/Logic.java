@@ -143,10 +143,15 @@ public class Logic implements ILogic {
 		BufferedReader reader = new BufferedReader(new StringReader(trxsBlock));
 		String trxString = null;
 		try{
-		while ((trxString = reader.readLine()) != null)
-			System.out.println("next trxLine: " + trxString);
-			if (dao.storeTrx(Trx.parse(trxString)))
-				storedCount++;
+			while ((trxString = reader.readLine()) != null)
+			{
+				System.out.println("next trxLine: " + trxString);
+		
+				if (dao.storeTrx(Trx.parse(trxString)))
+				{
+					storedCount++;
+				}
+			}
 		}
 		catch(Exception e)
 		{

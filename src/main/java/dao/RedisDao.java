@@ -150,13 +150,22 @@ public class RedisDao implements IDao {
 		int resultAcidNum = 0;
 		List<String> insees = reQuery.getInsees();
 		BitSet inseeBit = (BitSet)inseeAcids.get(insees.get(0)).clone();
+		System.out.println(insees.get(0));
+		System.out.println(inseeBit);
+		
 		for (int i = 1; i < insees.size(); i++) {
 			inseeBit.or((BitSet)inseeAcids.get(insees.get(i))
 					.clone());
 		}
 
 		BitSet ageBit = (BitSet) ageGroups.get(reQuery.getAgeGroup()).clone();
+		System.out.println(reQuery.getAgeGroup());
+		System.out.println(ageBit);
 		BitSet meridBit = (BitSet) meridToAcids.get(reQuery.getMerid()).clone();
+
+		System.out.println(reQuery.getMerid());
+		System.out.println(meridBit);
+
 
 		BitSet genderBitSet = null;
 		Gender gender = reQuery.getGender();
@@ -165,6 +174,8 @@ public class RedisDao implements IDao {
 		else
 			genderBitSet = (BitSet)fames.clone();
 
+		System.out.println(reQuery.getGender());
+		System.out.println(genderBitSet);
 		meridBit.and(inseeBit);
 		meridBit.and(genderBitSet);
 		meridBit.and(ageBit);
