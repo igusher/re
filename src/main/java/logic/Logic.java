@@ -77,6 +77,7 @@ public class Logic implements ILogic {
 
 	private List<Acid> readAcids() throws ParseException, IOException {
 		System.out.println("insert ACIDS");
+		System.out.println(acidsFile.getAbsolutePath());
 		FileReader fileReader = new FileReader(acidsFile);
 		BufferedReader reader = new BufferedReader(fileReader);
 		String acidString = null;
@@ -91,6 +92,7 @@ public class Logic implements ILogic {
 
 	private List<String> readInsees() throws IOException, ParseException {
 		System.out.println("read INSEEs");
+		System.out.println(inseesFile.getAbsolutePath());
 		FileReader fileReader = new FileReader(inseesFile);
 		BufferedReader reader = new BufferedReader(fileReader);
 		String insee = null;
@@ -103,6 +105,7 @@ public class Logic implements ILogic {
 
 	private List<Merid> readMerids() throws IOException, ParseException {
 		System.out.println("insert MERIDS");
+		System.out.println(meridsFile.getAbsolutePath());
 		FileReader fileReader = new FileReader(meridsFile);
 		BufferedReader reader = new BufferedReader(fileReader);
 		String meridString = null;
