@@ -127,7 +127,7 @@ public class Logic implements ILogic {
 		String trxString = null;
 		List<Trx> trxs = new ArrayList<Trx>(170000);
 		while ((trxString = reader.readLine()) != null)
-			trxs.add(new Trx(trxString));
+			trxs.add(Trx.parse(trxString));
 		return trxs;
 	}
 
@@ -139,11 +139,13 @@ public class Logic implements ILogic {
 	@Override
 	public int submitTrxsAsTextBlock(String trxsBlock) {
 		int storedCount = 0;
+		System.out.println("start methdod Logic#submitTrxsAsTextBlock");
 		BufferedReader reader = new BufferedReader(new StringReader(trxsBlock));
 		String trxString = null;
 		try{
 		while ((trxString = reader.readLine()) != null)
-			if (dao.storeTrx(new Trx(trxString)))
+			System.out.println("next trxLine: " + trxString);
+			if (dao.storeTrx(Trx.parse(trxString)))
 				storedCount++;
 		}
 		catch(Exception e)

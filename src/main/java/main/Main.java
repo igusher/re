@@ -130,7 +130,7 @@ public class Main {
 			List<Trx> trxs = new ArrayList<Trx>(170000);
 			while((line = reader.readLine()) != null )
 			{
-				trxs.add(new Trx(line));
+				trxs.add(Trx.parse(line));
 			}
 			dao.storeTrxs(trxs);
 			Date finish = new Date();

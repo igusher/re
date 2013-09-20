@@ -11,17 +11,28 @@ public class Trx {
 	Date trxDate;
 	String id;
 	double amount;
+	static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 	
-	public Trx(String line) throws ParseException
+	public Trx(String id, String acid, String merid, Date trxDate, double amount) 
 	{
-		String[] parts = line.split(";");
-		acid = parts[0];
-		merid = parts[1];
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-		trxDate = sdf.parse(parts[2]);
-		
-		id = parts[3];
-		amount = Double.parseDouble(parts[4]);
+		this.id = id;
+		this.acid = acid;
+		this.merid = merid;	
+		this.trxDate = trxDate;
+		this.amount = amount;
+	}
+
+	public static Trx parse(String trxLine) throws ParseException
+	{
+		System.out.println("Trx#init");
+		System.out.println(trxLine == null? "line = null": trxLine);
+		String[] parts = trxLine.split(";");
+		String acid = parts[0];
+		String merid = parts[1];
+		Date trxDate = sdf.parse(parts[2]);
+		String id = parts[3];
+		double amount = Double.parseDouble(parts[4]);
+		return new Trx(id,acid,merid,trxDate,amount);
 	}
 	
 	
