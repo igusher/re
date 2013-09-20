@@ -42,6 +42,8 @@ public class RedisDao implements IDao {
 
 	public RedisDao(String host, int port) {
 		jedisClient = new Jedis(host);
+		jedisClient.connect();
+		jedisClient.flushDB();
 	}
 
 	@Override
@@ -90,6 +92,7 @@ public class RedisDao implements IDao {
 			if ((years >= 55) && (years < 70))
 				ageGroups.get(AgeGroup.G55_70).set(bitId);
 			bitId++;
+			acidArrayId++;
 		}
 	}
 
@@ -100,6 +103,7 @@ public class RedisDao implements IDao {
 		for (Merid merid : merids) {
 			meridToAcids.put(merid.getId(), new BitSet(acidsCount));
 			meridIdToArrayId.put(merid.getId(), meridArrayId);
+			meridArrayId++;
 		}
 
 	}
@@ -115,6 +119,7 @@ public class RedisDao implements IDao {
 	
 	@Override
 	public boolean storeTrx(Trx trx) {
+		System.out.println("start RedisDao#storeTrx:");
 		Integer acidId = acidIdToArrayId.get(trx.getAcid());
 		if (acidId == null)
 			return false;
@@ -122,13 +127,14 @@ public class RedisDao implements IDao {
 		if (meridId == null)
 			return false;
 
-		String insee = merids.get(meridIdToArrayId.get(trx.getMerid()))
+		String insee = merids.get(meridId)
 				.getInsee();
+		System.out.println("INSEE: "+ insee);
 		inseeAcids.get(insee).set(acidId);
 		meridToAcids.get(trx.getMerid()).set(acidId);
 
 		saveTrxToRedis(trx);
-
+		System.out.println("end RedisDao#storeTrx;");
 		return true;
 	}
 
@@ -181,18 +187,21 @@ public class RedisDao implements IDao {
 		meridBit.and(ageBit);
 
 		System.out.println(meridBit);
+		System.out.println(sdf.format(reQuery.getFromDate()));
+		System.out.println(sdf.format(reQuery.getToDate()));
 		int acidId = meridBit.nextSetBit(0);
 		for (; acidId >= 0; acidId = meridBit.nextSetBit(acidId + 1)) {
 			String key = reQuery.getMerid() + "_" + acids.get(acidId);
 			jedisClient.lrange(key, 0, -1);
 			List<String> trxsStrings = jedisClient.lrange(key, 0, -1);
-			System.out.println(key);
+			System.out.println(key + ". TrxsCount = " + trxsStrings.size());
 			int count = 0;
 
 			for (String trx : trxsStrings) {
 				Date trxDate = null;
 				try {
 					trxDate = sdf.parse(trx.split(";")[0]);
+					System.out.println("Parsed TrxDate = " + sdf.format(trxDate));
 				} catch (Exception e) {
 					e.printStackTrace();
 					break;
@@ -201,11 +210,13 @@ public class RedisDao implements IDao {
 						&& (trxDate.before(reQuery.getToDate())))
 					count++;
 			}
+			System.out.println("acidId = " + acidId + ". count = " + count);
 			if ((count >= reQuery.getMinTrxNum())
 					&& (count <= reQuery.getMaxTrxNum())) {
 				resultAcidNum++;
 			}
 		}
+		System.out.println("exit RedisDao#getAcidsNum. resultAcidNum = " + resultAcidNum);
 		return resultAcidNum;
 	}
 
