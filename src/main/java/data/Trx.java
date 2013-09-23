@@ -24,8 +24,8 @@ public class Trx {
 
 	public static Trx parse(String trxLine) throws ParseException
 	{
-		System.out.println("Trx#init");
-		System.out.println(trxLine == null? "line = null": trxLine);
+//		System.out.println("Trx#init");
+//		System.out.println(trxLine == null? "line = null": trxLine);
 		String[] parts = trxLine.split(";");
 		String acid = parts[0];
 		String merid = parts[1];

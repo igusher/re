@@ -139,13 +139,13 @@ public class Logic implements ILogic {
 	@Override
 	public int submitTrxsAsTextBlock(String trxsBlock) {
 		int storedCount = 0;
-		System.out.println("start methdod Logic#submitTrxsAsTextBlock");
+//		System.out.println("start methdod Logic#submitTrxsAsTextBlock");
 		BufferedReader reader = new BufferedReader(new StringReader(trxsBlock));
 		String trxString = null;
 		try{
 			while ((trxString = reader.readLine()) != null)
 			{
-				System.out.println("next trxLine: " + trxString);
+//				System.out.println("next trxLine: " + trxString);
 		
 				if (dao.storeTrx(Trx.parse(trxString)))
 				{

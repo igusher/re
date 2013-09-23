@@ -119,7 +119,7 @@ public class RedisDao implements IDao {
 	
 	@Override
 	public boolean storeTrx(Trx trx) {
-		System.out.println("start RedisDao#storeTrx:");
+//		System.out.println("start RedisDao#storeTrx:");
 		Integer acidId = acidIdToArrayId.get(trx.getAcid());
 		if (acidId == null)
 			return false;
@@ -129,12 +129,12 @@ public class RedisDao implements IDao {
 
 		String insee = merids.get(meridId)
 				.getInsee();
-		System.out.println("INSEE: "+ insee);
+//		System.out.println("INSEE: "+ insee);
 		inseeAcids.get(insee).set(acidId);
 		meridToAcids.get(trx.getMerid()).set(acidId);
 
 		saveTrxToRedis(trx);
-		System.out.println("end RedisDao#storeTrx;");
+//		System.out.println("end RedisDao#storeTrx;");
 		return true;
 	}
 
